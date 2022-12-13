@@ -4,11 +4,12 @@ import buildspaceLogo from '../assets/buildspace-logo.png';
 import { useState } from 'react';
 
 const Home = () => {
-  const [userDislikes, setUserDislikes] = useState('');
-  const [userLikes, setUserLikes] = useState('');
+  const [userDislikes, setUserDislikes] = useState('dolls and hot sauce');
+  const [userLikes, setUserLikes] = useState('photography, nature, stuffed animals and warm sweaters');
   const [ageInput, setAgeInput] = useState('');
   const [apiOutput, setApiOutput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [productsList, setProductsList] = useState([]);
 
   const callGenerateEndpoint = async () => {
     setIsGenerating(true);
@@ -25,7 +26,16 @@ const Home = () => {
     const data = await response.json();
     const { output } = data;
     console.log("OpenAI replied...", output.text)
+    const outputArr = output.text.split("\n");
+    let productArr = []
 
+    for(let i=2; i < outputArr.length; i++){
+      let lineItem = outputArr[i].split("|");
+      let giftItem = {name:lineItem[1], price:lineItem[2], review:lineItem[3]};
+      productArr.push(giftItem);
+      
+    }
+    setProductsList(productArr);
     setApiOutput(`${output.text}`);
     setIsGenerating(false);
   }
@@ -75,7 +85,6 @@ const Home = () => {
             name="likeInput"
             value={userLikes}
             onChange={onUserChangedLikes}
-            placeholder="photography, nature, stuffed animals and warm sweaters" 
             className="prompt-box"
           />
           <label htmlFor="dislikeInput">Dislikes</label>
@@ -83,7 +92,6 @@ const Home = () => {
             name="dislikeInput"
             value={userDislikes}
             onChange={onUserChangedDislikes}
-            placeholder="dolls and hot sauce" 
             className="prompt-box"
           />
           <div className="prompt-buttons">
@@ -101,7 +109,15 @@ const Home = () => {
               </div>
             </div>
             <div className="output-content">
-              <p>{apiOutput}</p>
+              <ol className="item-list">
+                {productsList.map((item, index) => (
+                  <li key={index} >
+                    <div className="itemTitle">{item.name}</div>
+                    <div className="itemPrice">{item.price}</div>
+                    <div className="itemReview">{item.review}</div>               
+                  </li>
+                ))}
+                </ol>
             </div>
           </div>  
           )}

@@ -8,7 +8,9 @@ const openai = new OpenAIApi(configuration);
 const basePromptPrefix = "Generate a spreadsheet showing the top 10 gifts for a ";
 const basePromptPrefix2 = " year old. They do not like ";
 const basePromptPrefix3 = ". They like "
-const spreadSheetFormat = ".\n|name|price|url|sample product review|";
+const spreadSheetFormat = ". \n|name|price|description of why it's a good gift for this person|";
+
+//TODO: make the URLs actually work.
 
 const generateAction = async (req, res) => {
     
